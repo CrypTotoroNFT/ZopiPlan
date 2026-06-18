@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Plan de entrenamiento minimalista enfocado en la adherencia y la salud lumbar.">
+    <title>Zopiplan - Plan de Entrenamiento</title>
+    <!-- Web App / PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Zopiplan">
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Google Fonts: Outfit for sporty/modern look & Inter for readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1e1b4b 100%);
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            
+            /* Accents */
+            --accent-primary: #8b5cf6; /* Indigo/Purple */
+            --accent-primary-hover: #a78bfa;
+            --accent-success: #10b981; /* Emerald/Neon Green */
+            --accent-success-glow: rgba(16, 185, 129, 0.3);
+            --accent-warning: #f59e0b; /* Amber */
+            --accent-info: #06b6d4; /* Cyan */
+            
+            /* Transitions */
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 80px;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 16px 16px 4px 16px;
+        }
+
+        header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Glass Card Component */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Progress Bar Widget */
+        .progress-widget {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: rgba(30, 41, 59, 0.4);
+        }
+
+        .progress-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .progress-text span:first-child {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .progress-text span:last-child {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 99px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-success) 100%);
+            border-radius: 99px;
+            transition: width 0.4s ease-out;
+            box-shadow: 0 0 12px var(--accent-success-glow);
+        }
+
+        .progress-percentage {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-success);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Habit History Tracker Card */
+        .history-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .history-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .streak-badge {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--accent-warning);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-grid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .history-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 4px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .history-day {
+            flex-shrink: 0;
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .history-day.partial {
+            background: rgba(16, 185, 129, 0.4);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .history-day.full {
+            background: var(--accent-success);
+            border-color: var(--accent-success);
+            box-shadow: 0 0 6px var(--accent-success-glow);
+        }
+
+        .history-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Warm-up Section */
+        .warmup-card {
+            border-left: 4px solid var(--accent-info);
+            background: rgba(6, 182, 212, 0.04);
+        }
+
+        .warmup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .warmup-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--accent-info);
+        }
+
+        .warmup-toggle-icon {
+            fill: var(--accent-info);
+            transition: var(--transition-smooth);
+        }
+
+        .warmup-content {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .warmup-content.open {
+            max-height: 600px;
+            opacity: 1;
+        }
+
+        .warmup-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .warmup-item-text {
+            flex-grow: 1;
+        }
+
+        .warmup-item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .warmup-item-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Days Navigation Grid */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-tab {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 10px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .day-tab span:first-child {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .day-tab span:last-child {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .day-tab:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .day-tab.active {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, #6366f1 100%);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .day-tab.active span {
+            color: white !important;
+        }
+
+        /* Active Routine Container */
+        .routine-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .routine-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 10px;
+            margin-bottom: 4px;
+        }
+
+        .routine-day-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .routine-type-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 99px;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-primary-hover);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        /* Exercise Cards */
+        .exercise-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(30, 41, 59, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 16px;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .exercise-layout {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .exercise-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-grow: 1;
+        }
+
+        .exercise-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .exercise-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        .exercise-diagram {
+            flex-shrink: 0;
+            width: 100px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+
+        .exercise-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .exercise-volume {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        /* Interactive Sets Checklist */
+        .sets-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            padding-top: 12px;
+        }
+
+        .set-btn {
+            flex-grow: 1;
+            flex-basis: 80px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            user-select: none;
+        }
+
+        .set-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+        }
+
+        .set-btn.completed {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: var(--accent-success);
+            color: var(--accent-success);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+            font-weight: 600;
+        }
+
+        .set-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: var(--transition-smooth);
+        }
+
+        .set-btn.completed svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Rest Timer Widget */
+        .timer-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(30, 41, 59, 0.3) 100%);
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .timer-layout {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 16px;
+        }
+
+        .timer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .timer-circle-container {
+            position: relative;
+            width: 54px;
+            height: 54px;
+        }
+
+        .timer-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.04);
+            stroke-width: 4;
+        }
+
+        .timer-circle-progress {
+            fill: none;
+            stroke: var(--accent-primary);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .timer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .timer-info span:first-child {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .timer-info span:last-child {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .timer-presets {
+            display: flex;
+            gap: 6px;
+        }
+
+        .timer-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .timer-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .timer-control-btn {
+            background: var(--accent-primary);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25);
+        }
+
+        .timer-control-btn:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Tips & Rule Card */
+        .tips-card {
+            border-left: 4px solid var(--accent-warning);
+            background: rgba(245, 158, 11, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--accent-warning);
+            font-size: 1rem;
+        }
+
+        .tips-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        /* Reset Progress Button */
+        .reset-btn {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: rgba(239, 68, 68, 0.6);
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .reset-btn:hover {
+            background: rgba(239, 68, 68, 0.05);
+            color: rgba(239, 68, 68, 0.9);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .day-tab span:last-child {
+                font-size: 0.85rem;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+
+            .exercise-layout {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .exercise-diagram {
+                align-self: center;
+                width: 100%;
+                height: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- HEADER -->
+    <header>
+        <h1>Zopiplan</h1>
+        <p>Hábito y Cuidado Lumbar</p>
+    </header>
+
+    <!-- PROGRESS WIDGET -->
+    <div class="card progress-widget">
+        <div class="progress-text">
+            <span>Progreso de hoy</span>
+            <span id="progress-subtitle">0 de 0 completado</span>
+        </div>
+        <div class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="progress-percentage" class="progress-percentage">0%</div>
+    </div>
+
+    <!-- HABIT TRACKER / WEEKLY GRID -->
+    <div class="card history-card">
+        <div class="history-header">
+            <div class="history-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span>Consistencia (Racha)</span>
+            </div>
+            <div class="streak-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                </svg>
+                <span id="streak-count">0 Días</span>
+            </div>
+        </div>
+        <div class="history-grid-container">
+            <div id="history-grid" class="history-grid">
+                <!-- Dynamically populated 28 squares (last 4 weeks) -->
+            </div>
+            <div class="history-labels">
+                <span>Hace 4 semanas</span>
+                <span>Hoy</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- WARMUP & DECOMPRESSION SECTION -->
+    <div class="card warmup-card">
+        <div class="warmup-header" onclick="toggleWarmup()">
+            <div class="warmup-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                </svg>
+                <span>Calentamiento y Descompresión (5 min)</span>
+            </div>
+            <svg id="warmup-arrow" class="warmup-toggle-icon" width="16" height="16" viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5H7z"/>
+            </svg>
+        </div>
+        <div id="warmup-content" class="warmup-content">
+            <div class="warmup-item">
+                <div class="exercise-diagram">
+                    <svg width="90" height="60" viewBox="0 0 90 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="20" y1="10" x2="20" y2="50" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="45" cy="18" r="5" fill="#f8fafc"/>
+                        <line x1="45" y1="23" x2="45" y2="40" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="45" y1="23" x2="22" y2="23" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M45 40 Q58 43 54 48" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/>
+                        <path d="M45 40 Q32 43 36 48" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/>
+                        <line x1="45" y1="40" x2="48" y2="53" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="45" y1="40" x2="42" y2="53" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="warmup-item-text">
+                    <div class="warmup-item-title">1. Balanceos de Pierna (Leg Swings)</div>
+                    <div class="warmup-item-desc">Apóyate en un poste o paralela. Balancea una pierna adelante/atrás de forma fluida (10 reps). Luego de lado a lado (10 reps). Cambia de pierna. Abre cadera y activa glúteos.</div>
+                </div>
+            </div>
+            <div class="warmup-item">
+                <div class="exercise-diagram">
+                    <svg width="90" height="60" viewBox="0 0 90 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="15" y1="10" x2="15" y2="50" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="42" cy="22" r="5" fill="#f8fafc"/>
+                        <line x1="42" y1="23" x2="15" y2="23" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M42 27 L50 35 L45 46" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M45 46 L30 46" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M54 28 L58 35" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M58 35 L55 33 M58 35 L57 31" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="warmup-item-text">
+                    <div class="warmup-item-title">2. Sentadilla Profunda Soportada</div>
+                    <div class="warmup-item-desc">Agárrate del poste vertical. Déjate caer en sentadilla completa, llevando la cadera abajo y atrás. Relaja la espalda baja por 30-45s para traccionar las vértebras.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REST TIMER WIDGET -->
+    <div class="card timer-card">
+        <div class="timer-layout">
+            <div class="timer-left">
+                <div class="timer-circle-container">
+                    <svg width="54" height="54">
+                        <circle class="timer-circle-bg" cx="27" cy="27" r="24"/>
+                        <circle id="timer-progress" class="timer-circle-progress" cx="27" cy="27" r="24" stroke-dasharray="150.79" stroke-dashoffset="0"/>
+                    </svg>
+                    <div id="timer-display" class="timer-display">60s</div>
+                </div>
+                <div class="timer-info">
+                    <span>Temporizador de Descanso</span>
+                    <span id="timer-status">Listo</span>
+                </div>
+            </div>
+            <button id="timer-toggle-btn" class="timer-control-btn" onclick="toggleTimer()">Iniciar</button>
+        </div>
+        <div class="timer-presets">
+            <button class="timer-btn" onclick="setTimerPreset(60)">60s</button>
+            <button class="timer-btn" onclick="setTimerPreset(90)">90s</button>
+            <button class="timer-btn" onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <!-- DAYS NAVIGATION -->
+    <div class="days-grid">
+        <div class="day-tab" data-day="1" onclick="selectDay(1)">
+            <span>LUN</span>
+            <span>D1</span>
+        </div>
+        <div class="day-tab" data-day="2" onclick="selectDay(2)">
+            <span>MAR</span>
+            <span>D2</span>
+        </div>
+        <div class="day-tab" data-day="3" onclick="selectDay(3)">
+            <span>MIÉ</span>
+            <span>D3</span>
+        </div>
+        <div class="day-tab" data-day="4" onclick="selectDay(4)">
+            <span>JUE</span>
+            <span>D4</span>
+        </div>
+        <div class="day-tab" data-day="5" onclick="selectDay(5)">
+            <span>VIE</span>
+            <span>D5</span>
+        </div>
+        <div class="day-tab" data-day="6" onclick="selectDay(6)">
+            <span>SÁB</span>
+            <span>D6</span>
+        </div>
+        <div class="day-tab" data-day="7" onclick="selectDay(7)">
+            <span>DOM</span>
+            <span>D7</span>
+        </div>
+    </div>
+
+    <!-- MAIN ROUTINE CONTAINER -->
+    <div class="card">
+        <div class="routine-container" id="routine-container">
+            <!-- Dynamically populated via JS -->
+        </div>
+    </div>
+
+    <!-- ADHERENCE & CONSISTENCY CARD -->
+    <div class="card tips-card">
+        <div class="tips-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+            </svg>
+            <span>Regla de Oro de la Consistencia</span>
+        </div>
+        <p class="tips-text">
+            <strong>Nunca te saltes dos días seguidos:</strong> Si estás cansado, con dolor o no tienes tiempo, haz únicamente los 5 minutos de Calentamiento de pie y 15 minutos de caminata ligera. Lo importante es mantener la consistencia del hábito diario.
+        </p>
+    </div>
+
+    <!-- RESET BUTTON -->
+    <button class="reset-btn" onclick="clearAllProgress()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+        </svg>
+        <span>Reiniciar todos los datos</span>
+    </button>
+
+</div>
+
+<script>
+    // Diagrams definition in SVG
+    const diagrams = {
+        dead_hang: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="12" x2="70" y2="12" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="40" cy="24" r="4.5" fill="#f8fafc"/>
+            <line x1="33" y1="12" x2="38" y2="24" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="47" y1="12" x2="42" y2="24" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="40" y1="28.5" x2="40" y2="46" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+            <line x1="40" y1="46" x2="36" y2="55" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="40" y1="46" x2="44" y2="55" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M25 28 L25 40" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M25 40 L22 38 M25 40 L28 38" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>`,
+        scapular_pullup: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="10" x2="70" y2="10" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="40" cy="20" r="4.5" fill="#f8fafc"/>
+            <line x1="32" y1="10" x2="37" y2="19" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+            <line x1="48" y1="10" x2="43" y2="19" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+            <line x1="40" y1="24.5" x2="40" y2="42" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+            <path d="M38 28.5 L34 26.5 M42 28.5 L46 26.5" stroke="#8b5cf6" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="40" y1="42" x2="37" y2="53" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="40" y1="42" x2="43" y2="53" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M60 28 L60 21" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M60 21 L57 23 M60 21 L63 23" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>`,
+        australian_row: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="45" cy="20" r="4" fill="#475569"/>
+            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="50" cy="25" r="4" fill="#f8fafc"/>
+            <line x1="50" y1="29" x2="30" y2="47" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+            <path d="M50 29 L45 20" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M26 31 L32 25" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M32 25 L29 25 M32 25 L32 28" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>`,
+        carrera: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="52" x2="70" y2="52" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="46" cy="18" r="4" fill="#f8fafc"/>
+            <path d="M46 22 L42 34 L54 41" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M42 34 L32 40 L38 52" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M42 34 L48 46 L58 48" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M44 24 L52 28 L48 35" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+            <path d="M15 25 L25 25 M18 30 L28 30" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3"/>
+        </svg>`,
+        incline_pushup: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="20" y1="35" x2="20" y2="20" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="28" cy="24" r="4.5" fill="#f8fafc"/>
+            <line x1="28" y1="28.5" x2="55" y2="49.5" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+            <line x1="28" y1="28.5" x2="20" y2="28.5" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M36 17 L29 22" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M29 22 L33 22 M29 22 L29 19" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>`,
+        support_isometric: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="20" y1="30" x2="60" y2="30" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="40" cy="15" r="4" fill="#f8fafc"/>
+            <line x1="40" y1="19" x2="40" y2="36" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+            <line x1="40" y1="19" x2="40" y2="30" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="40" y1="36" x2="36" y2="48" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="40" y1="36" x2="44" y2="48" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M28 20 Q40 22 52 20" stroke="#10b981" stroke-width="1" stroke-linecap="round" stroke-dasharray="2 2"/>
+        </svg>`,
+        bench_dip: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15" y="30" width="15" height="15" fill="#475569"/>
+            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="36" cy="20" r="4" fill="#f8fafc"/>
+            <path d="M36 24 L25 24 L25 30" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M36 24 L36 36 L48 36 L54 49" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
+        walk: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="52" x2="70" y2="52" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="40" cy="18" r="4" fill="#f8fafc"/>
+            <line x1="40" y1="22" x2="40" y2="36" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+            <path d="M40 36 L34 44 L42 52" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 36 L46 44 L44 52" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 23 L44 32" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+            <path d="M40 23 L36 30" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+        </svg>`,
+        air_squat: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="40" cy="22" r="4" fill="#f8fafc"/>
+            <path d="M40 26 L42 34 L30 38 L32 50" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="40" y1="26" x2="52" y2="26" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`,
+        reverse_lunge: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="38" cy="18" r="4" fill="#f8fafc"/>
+            <line x1="38" y1="22" x2="38" y2="34" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+            <path d="M38 34 L48 34 L48 50" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M38 34 L26 38 L22 48" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M38 23 L44 29" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+        </svg>`,
+        sumo_squat: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="40" cy="22" r="4.5" fill="#f8fafc"/>
+            <line x1="40" y1="26.5" x2="40" y2="35" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M40 35 L26 38 L24 50" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 35 L54 38 L56 50" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="40" y1="26.5" x2="40" y2="33" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`,
+        basket: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="60" y1="10" x2="60" y2="35" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <line x1="60" y1="18" x2="50" y2="18" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="30" cy="25" r="5" fill="#f59e0b"/>
+            <path d="M30 20 Q42 12 50 17" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2 2" stroke-linecap="round"/>
+        </svg>`
+    };
+
+    // Routine Data: Monday (Lunes = Día 1) starts with Basketball. Other days shift accordingly.
+    const routines = {
+        1: {
+            name: "Día 1: Recreación / Descanso",
+            type: "Juego y Recuperación",
+            exercises: [
+                { id: "d1_e1", title: "Básquetbol Recreativo / Descanso", desc: "Disfruta de tu partido semanal con amigos o descansa por completo si la espalda lo requiere. ¡Mantén el foco en moverte sin dolor!", volume: "Partida recreativa o descanso total", sets: 1, diagram: "basket" }
+            ]
+        },
+        2: {
+            name: "Día 2: Fuerza - Tirón",
+            type: "Fuerza (Espalda / Bíceps)",
+            exercises: [
+                { id: "d2_e1", title: "Cuelgues Pasivos (Dead Hangs)", desc: "Cuélgate de la barra alta con los brazos estirados y cuerpo relajado. Deja que la gravedad estire y descomprime la columna lumbar.", volume: "3 series x Max tiempo (apunta a 30s-45s)", sets: 3, diagram: "dead_hang" },
+                { id: "d2_e2", title: "Dominadas Escapulares", desc: "Colgado de la barra, junta tus escápulas hacia abajo y atrás para elevar ligeramente el cuerpo sin flexionar los codos. Sostén 1s arriba.", volume: "3 series x 8-10 repeticiones", sets: 3, diagram: "scapular_pullup" },
+                { id: "d2_e3", title: "Remos en Paralelas (Australian Rows)", desc: "Cuélgate por debajo de una de las paralelas con los talones apoyados adelante en el suelo. Tira con tu espalda llevando el pecho a la barra.", volume: "3 series x 8-12 repeticiones", sets: 3, diagram: "australian_row" }
+            ]
+        },
+        3: {
+            name: "Día 3: Carrera Progresiva",
+            type: "Cardio e Isquiotibiales",
+            exercises: [
+                { id: "d3_e1", title: "Caminata de Calentamiento", desc: "10 minutos de caminata ligera para acondicionar y lubricar las articulaciones.", volume: "10 Minutos", sets: 1, diagram: "walk" },
+                { id: "d3_e2", title: "Aceleraciones Progresivas (Tempo Runs)", desc: "Corre en línea recta (50-60m). Acelera de forma progresiva hasta el 75-80% de tu velocidad máxima a la mitad del trayecto, y desacelera muy suavemente (sin frenar en seco). Camina de vuelta para recuperar por completo.", volume: "6 a 8 pasadas", sets: 6, diagram: "carrera" }
+            ]
+        },
+        4: {
+            name: "Día 4: Fuerza - Empuje",
+            type: "Fuerza (Pecho / Tríceps)",
+            exercises: [
+                { id: "d4_e1", title: "Flexiones Inclinadas en Paralela", desc: "Apoya las manos en una de las barras paralelas con los pies en el suelo. Mantén glúteos y abdomen bien apretados durante el recorrido.", volume: "3 series x 10-15 repeticiones", sets: 3, diagram: "incline_pushup" },
+                { id: "d4_e2", title: "Soporte Isométrico en Paralelas", desc: "Súbete a las paralelas con brazos estirados. Empuja las barras hacia abajo alejando hombros de tus orejas. Mantén el abdomen tenso.", volume: "3 series x 20-30 segundos", sets: 3, diagram: "support_isometric" },
+                { id: "d4_e3", title: "Fondos de Tríceps en Banco / Barra Baja", desc: "De espaldas a un banco, apoya las manos en el borde con las piernas extendidas adelante (pies apoyados). Flexiona codos bajando la cadera y empuja.", volume: "3 series x 8-12 repeticiones", sets: 3, diagram: "bench_dip" }
+            ]
+        },
+        5: {
+            name: "Día 5: Carrera Progresiva",
+            type: "Cardio e Isquiotibiales",
+            exercises: [
+                { id: "d5_e1", title: "Caminata de Calentamiento", desc: "10 minutos de caminata a buen ritmo antes de correr.", volume: "10 Minutos", sets: 1, diagram: "walk" },
+                { id: "d5_e2", title: "Aceleraciones Progresivas (Tempo Runs)", desc: "Pasadas de 50-60m con aceleración progresiva hasta el 75-80% y desaceleración suave y controlada. Camina de vuelta para recuperar.", volume: "6 a 8 pasadas", sets: 6, diagram: "carrera" }
+            ]
+        },
+        6: {
+            name: "Día 6: Fuerza - Piernas",
+            type: "Fuerza (Piernas / Cadena Posterior)",
+            exercises: [
+                { id: "d6_e1", title: "Sentadillas al Aire (Air Squats)", desc: "Sentadillas libres. Baja la cadera solo hasta donde puedas mantener la espalda completamente recta (sin redondear la zona lumbar).", volume: "3 series x 12-15 repeticiones", sets: 3, diagram: "air_squat" },
+                { id: "d6_e2", title: "Zancadas hacia Atrás (Reverse Lunges)", desc: "De pie, da un paso largo hacia atrás bajando la rodilla de forma controlada. Alterna piernas. Cero impacto y excelente para el glúteo.", volume: "3 series x 10 repeticiones por pierna", sets: 3, diagram: "reverse_lunge" },
+                { id: "d6_e3", title: "Sentadillas Sumo", desc: "Pies más abiertos que tus hombros y puntas hacia afuera (45°). Baja la cadera manteniendo el torso erguido y empujando rodillas hacia afuera.", volume: "3 series x 10-12 repeticiones", sets: 3, diagram: "sumo_squat" }
+            ]
+        },
+        7: {
+            name: "Día 7: Descanso Activo",
+            type: "Recuperación",
+            exercises: [
+                { id: "d7_e1", title: "Caminata Dinámica", desc: "Caminata de ritmo moderado/alegre para promover el flujo sanguíneo y aliviar rigideces lumbares.", volume: "30 Minutos", sets: 1, diagram: "walk" },
+                { id: "d7_e2", title: "Cuelgues Pasivos (Descompresión)", desc: "Al finalizar la caminata, colgarse de la barra alta para traccionar las vértebras.", volume: "2 series x 30 segundos", sets: 2, diagram: "dead_hang" }
+            ]
+        }
+    };
+
+    let activeDay = 1;
+    let completedSets = JSON.parse(localStorage.getItem('completedSets')) || {};
+    let workoutHistory = JSON.parse(localStorage.getItem('workoutHistory')) || {};
+
+    // Timer variables
+    let timerDuration = 60;
+    let timerSecondsLeft = 60;
+    let timerInterval = null;
+    let timerRunning = false;
+    const progressRing = document.getElementById('timer-progress');
+    const ringCircumference = 2 * Math.PI * 24; // 150.79
+
+    // Initialize App
+    window.onload = function() {
+        // Set default active day to current day of the week (1=Lun, 7=Dom)
+        let currentDayOfWeek = new Date().getDay(); // 0 is Sunday, 1 is Monday...
+        activeDay = currentDayOfWeek === 0 ? 7 : currentDayOfWeek;
+        
+        selectDay(activeDay);
+        updateProgress();
+        updateHistoryUI();
+    };
+
+    // Helper: Formato de fecha YYYY-MM-DD
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Toggle Warmup accordion
+    function toggleWarmup() {
+        const content = document.getElementById('warmup-content');
+        const arrow = document.getElementById('warmup-arrow');
+        content.classList.toggle('open');
+        if (content.classList.contains('open')) {
+            arrow.style.transform = "rotate(180deg)";
+        } else {
+            arrow.style.transform = "rotate(0deg)";
+        }
+    }
+
+    // Select Day Tab
+    function selectDay(dayNum) {
+        activeDay = dayNum;
+        
+        // Update tab styling
+        document.querySelectorAll('.day-tab').forEach(tab => {
+            tab.classList.remove('active');
+            if (parseInt(tab.dataset.day) === dayNum) {
+                tab.classList.add('active');
+            }
+        });
+
+        // Load routine
+        const routine = routines[dayNum];
+        const container = document.getElementById('routine-container');
+        
+        let html = `
+            <div class="routine-header">
+                <span class="routine-day-name">${routine.name}</span>
+                <span class="routine-type-badge">${routine.type}</span>
+            </div>
+        `;
+
+        routine.exercises.forEach(ex => {
+            html += `
+                <div class="exercise-card">
+                    <div class="exercise-layout">
+                        <div class="exercise-info">
+                            <span class="exercise-title">${ex.title}</span>
+                            <span class="exercise-desc">${ex.desc}</span>
+                        </div>
+                        <div class="exercise-diagram">
+                            ${diagrams[ex.diagram] || ''}
+                        </div>
+                    </div>
+                    <div class="exercise-meta">
+                        <span class="exercise-volume">${ex.volume}</span>
+                    </div>
+                    <div class="sets-container">
+            `;
+            
+            for (let s = 1; s <= ex.sets; s++) {
+                const setId = `${ex.id}_s${s}`;
+                const isCompleted = completedSets[setId] ? 'completed' : '';
+                html += `
+                    <button id="${setId}" class="set-btn ${isCompleted}" onclick="toggleSet('${setId}')">
+                        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                        <span>Serie ${s}</span>
+                    </button>
+                `;
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+        updateProgress();
+    }
+
+    // Toggle set status
+    function toggleSet(setId) {
+        const btn = document.getElementById(setId);
+        const wasCompleted = btn.classList.contains('completed');
+        
+        if (wasCompleted) {
+            btn.classList.remove('completed');
+            delete completedSets[setId];
+        } else {
+            btn.classList.add('completed');
+            completedSets[setId] = true;
+            
+            // RESET AND RESTART TIMER ON COMPLETION (Avoid conflicts if clicked multiple or active)
+            resetTimer();
+            startTimer();
+        }
+        
+        localStorage.setItem('completedSets', JSON.stringify(completedSets));
+        saveToHistory();
+        updateProgress();
+    }
+
+    // Guardar el progreso en el Historial a largo plazo (por fecha)
+    function saveToHistory() {
+        const todayStr = formatDate(new Date());
+        
+        // Calcular completado de hoy
+        const routine = routines[activeDay];
+        let totalSets = 0;
+        let completedToday = 0;
+
+        routine.exercises.forEach(ex => {
+            totalSets += ex.sets;
+            for (let s = 1; s <= ex.sets; s++) {
+                const setId = `${ex.id}_s${s}`;
+                if (completedSets[setId]) {
+                    completedToday++;
+                }
+            }
+        });
+
+        const percentage = totalSets > 0 ? Math.round((completedToday / totalSets) * 100) : 0;
+        
+        // Guardar en el mapa de fechas
+        if (completedToday > 0) {
+            workoutHistory[todayStr] = {
+                dayNum: activeDay,
+                completed: completedToday,
+                total: totalSets,
+                percent: percentage
+            };
+        } else {
+            // Si desmarcó todo, borrar el día del historial
+            delete workoutHistory[todayStr];
+        }
+        
+        localStorage.setItem('workoutHistory', JSON.stringify(workoutHistory));
+        updateHistoryUI();
+    }
+
+    // Actualizar la grilla de consistencia y la racha (streak)
+    function updateHistoryUI() {
+        const grid = document.getElementById('history-grid');
+        grid.innerHTML = ''; // Limpiar
+        
+        const streak = calculateStreak();
+        document.getElementById('streak-count').innerText = `${streak} ${streak === 1 ? 'Día' : 'Días'}`;
+
+        // Renderizar los últimos 28 días (4 semanas)
+        for (let i = 27; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dateStr = formatDate(d);
+            const entry = workoutHistory[dateStr];
+            
+            let statusClass = '';
+            let tooltipText = `${d.getDate()}/${d.getMonth()+1}`;
+            
+            if (entry) {
+                if (entry.percent === 100) {
+                    statusClass = 'full';
+                } else if (entry.percent > 0) {
+                    statusClass = 'partial';
+                }
+                tooltipText += `: Día ${entry.dayNum} - ${entry.percent}%`;
+            } else {
+                tooltipText += ': Sin entrenar';
+            }
+            
+            const square = document.createElement('div');
+            square.className = `history-day ${statusClass}`;
+            square.title = tooltipText;
+            grid.appendChild(square);
+        }
+    }
+
+    // Calcular racha actual en días seguidos
+    function calculateStreak() {
+        let streak = 0;
+        let d = new Date();
+        
+        // Verificar hoy
+        let todayStr = formatDate(d);
+        let trainedToday = workoutHistory[todayStr] && workoutHistory[todayStr].percent > 0;
+        
+        // Verificar ayer
+        d.setDate(d.getDate() - 1);
+        let yesterdayStr = formatDate(d);
+        let trainedYesterday = workoutHistory[yesterdayStr] && workoutHistory[yesterdayStr].percent > 0;
+        
+        // Si no entrenó hoy ni ayer, racha rota
+        if (!trainedToday && !trainedYesterday) {
+            return 0;
+        }
+        
+        // Reiniciar a hoy y contar hacia atrás
+        d = new Date();
+        while (true) {
+            let dateStr = formatDate(d);
+            if (workoutHistory[dateStr] && workoutHistory[dateStr].percent > 0) {
+                streak++;
+                d.setDate(d.getDate() - 1); // ir al día anterior
+            } else {
+                break;
+            }
+        }
+        return streak;
+    }
+
+    // Calculate and update progress bar
+    function updateProgress() {
+        const routine = routines[activeDay];
+        let totalSets = 0;
+        let completedToday = 0;
+
+        routine.exercises.forEach(ex => {
+            totalSets += ex.sets;
+            for (let s = 1; s <= ex.sets; s++) {
+                const setId = `${ex.id}_s${s}`;
+                if (completedSets[setId]) {
+                    completedToday++;
+                }
+            }
+        });
+
+        const percentage = totalSets > 0 ? Math.round((completedToday / totalSets) * 100) : 0;
+        
+        // Update DOM
+        document.getElementById('progress-bar').style.width = `${percentage}%`;
+        document.getElementById('progress-percentage').innerText = `${percentage}%`;
+        document.getElementById('progress-subtitle').innerText = `${completedToday} de ${totalSets} series completadas`;
+        
+        if (percentage === 100) {
+            document.getElementById('progress-percentage').style.color = 'var(--accent-success)';
+        } else {
+            document.getElementById('progress-percentage').style.color = 'var(--accent-success)';
+        }
+    }
+
+    // Clear all localStorage progress
+    function clearAllProgress() {
+        if (confirm("¿Seguro que quieres reiniciar todos tus datos de entrenamiento? Esto borrará tu historial de consistencia y racha de forma irreversible.")) {
+            completedSets = {};
+            workoutHistory = {};
+            localStorage.removeItem('completedSets');
+            localStorage.removeItem('workoutHistory');
+            selectDay(activeDay);
+            updateProgress();
+            updateHistoryUI();
+            resetTimer();
+        }
+    }
+
+    // TIMER LOGIC
+    function setTimerPreset(seconds) {
+        timerDuration = seconds;
+        resetTimer();
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerSecondsLeft = timerDuration;
+        document.getElementById('timer-display').innerText = `${timerSecondsLeft}s`;
+        document.getElementById('timer-toggle-btn').innerText = "Iniciar";
+        document.getElementById('timer-status').innerText = "Listo";
+        progressRing.style.strokeDashoffset = 0;
+        progressRing.style.stroke = "var(--accent-primary)";
+    }
+
+    function toggleTimer() {
+        if (timerRunning) {
+            pauseTimer();
+        } else {
+            startTimer();
+        }
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timerRunning = true;
+        document.getElementById('timer-toggle-btn').innerText = "Pausar";
+        document.getElementById('timer-status').innerText = "Descansando...";
+        progressRing.style.stroke = "var(--accent-primary)";
+
+        timerInterval = setInterval(() => {
+            timerSecondsLeft--;
+            document.getElementById('timer-display').innerText = `${timerSecondsLeft}s`;
+            
+            // Update Ring Progress
+            const offset = ringCircumference - (timerSecondsLeft / timerDuration) * ringCircumference;
+            progressRing.style.strokeDashoffset = offset;
+
+            if (timerSecondsLeft <= 0) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timer-display').innerText = "0s";
+                document.getElementById('timer-toggle-btn').innerText = "Reiniciar";
+                document.getElementById('timer-status').innerText = "¡Descanso terminado!";
+                progressRing.style.stroke = "var(--accent-success)";
+                playBeep();
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timer-toggle-btn').innerText = "Reanudar";
+        document.getElementById('timer-status').innerText = "Pausado";
+    }
+
+    // Web Audio API Beep Sound (100% self-contained)
+    function playBeep() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.value = 600; // Tone pitch in Hz
+            
+            // Clean envelope to prevent click sounds
+            gain.gain.setValueAtTime(0, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.05);
+            gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.35);
+            
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.35);
+        } catch(e) {
+            console.log("Audio not supported or blocked by browser policy");
+        }
+    }
+</script>
+
+</body>
+</html>
