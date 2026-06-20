@@ -67,25 +67,55 @@
 
         /* Header Styles */
         header {
-            text-align: center;
-            padding: 16px 16px 4px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 8px 4px 8px;
+            text-align: left;
+        }
+
+        .header-logo-container {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: rgba(17, 24, 39, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+        }
+
+        .header-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         header h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             letter-spacing: -0.025em;
             background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #6366f1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             text-transform: uppercase;
+            line-height: 1.1;
         }
 
         header p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 500;
         }
 
@@ -719,8 +749,13 @@
     
     <!-- HEADER -->
     <header>
-        <h1>Zopiplan</h1>
-        <p>Hábito y Cuidado Lumbar</p>
+        <div class="header-logo-container">
+            <img src="images/zopilote_icon.png" alt="Zopilote Logo" class="header-logo">
+        </div>
+        <div class="header-text">
+            <h1>Zopiplan</h1>
+            <p>Hábito y Cuidado Lumbar</p>
+        </div>
     </header>
 
     <!-- PROGRESS WIDGET -->
