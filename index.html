@@ -274,6 +274,13 @@
             line-height: 1;
             opacity: 0.5;
             pointer-events: none;
+            z-index: 1;
+        }
+
+        .day-number {
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
         }
 
         .history-day.partial {
@@ -1599,7 +1606,11 @@
             const square = document.createElement('div');
             square.className = `history-day ${statusClass}`;
             square.title = tooltipText;
-            square.innerText = runner.getDate();
+            
+            const numSpan = document.createElement('span');
+            numSpan.className = 'day-number';
+            numSpan.innerText = runner.getDate();
+            square.appendChild(numSpan);
             
             if (dogWalkHistory[dateStr]) {
                 const paw = document.createElement('span');
