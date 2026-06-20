@@ -398,11 +398,23 @@
             animation: fadeIn 0.3s ease-out forwards;
         }
 
-        .exercise-layout {
+        .exercise-image-container {
+            width: 100%;
+            height: 360px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #0f172a; /* Fondo oscuro que coincide con el fondo de las imágenes generadas */
             display: flex;
-            gap: 16px;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .exercise-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Muestra la imagen cuadrada completa sin recortar pies ni cabeza */
         }
 
         .exercise-info {
@@ -423,19 +435,6 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
             line-height: 1.45;
-        }
-
-        .exercise-diagram {
-            flex-shrink: 0;
-            width: 100px;
-            height: 70px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4px;
         }
 
         .exercise-meta {
@@ -705,16 +704,8 @@
                 padding: 16px;
             }
 
-            .exercise-layout {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-            }
-
-            .exercise-diagram {
-                align-self: center;
-                width: 100%;
-                height: 90px;
+            .exercise-image-container {
+                height: 280px;
             }
         }
     </style>
@@ -914,111 +905,20 @@
 </div>
 
 <script>
-    // Diagrams definition in SVG
+    // Diagrams definition in image files
     const diagrams = {
-        dead_hang: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="10" y1="12" x2="70" y2="12" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="40" cy="24" r="4.5" fill="#f8fafc"/>
-            <line x1="33" y1="12" x2="38" y2="24" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="47" y1="12" x2="42" y2="24" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="40" y1="28.5" x2="40" y2="46" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-            <line x1="40" y1="46" x2="36" y2="55" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="40" y1="46" x2="44" y2="55" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M25 28 L25 40" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M25 40 L22 38 M25 40 L28 38" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>`,
-        scapular_pullup: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="10" y1="10" x2="70" y2="10" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="40" cy="20" r="4.5" fill="#f8fafc"/>
-            <line x1="32" y1="10" x2="37" y2="19" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
-            <line x1="48" y1="10" x2="43" y2="19" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
-            <line x1="40" y1="24.5" x2="40" y2="42" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-            <path d="M38 28.5 L34 26.5 M42 28.5 L46 26.5" stroke="#8b5cf6" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="40" y1="42" x2="37" y2="53" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="40" y1="42" x2="43" y2="53" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M60 28 L60 21" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M60 21 L57 23 M60 21 L63 23" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>`,
-        australian_row: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="45" cy="20" r="4" fill="#475569"/>
-            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="50" cy="25" r="4" fill="#f8fafc"/>
-            <line x1="50" y1="29" x2="30" y2="47" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-            <path d="M50 29 L45 20" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M26 31 L32 25" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M32 25 L29 25 M32 25 L32 28" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>`,
-        carrera: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="10" y1="52" x2="70" y2="52" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="46" cy="18" r="4" fill="#f8fafc"/>
-            <path d="M46 22 L42 34 L54 41" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M42 34 L32 40 L38 52" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M42 34 L48 46 L58 48" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M44 24 L52 28 L48 35" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
-            <path d="M15 25 L25 25 M18 30 L28 30" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3"/>
-        </svg>`,
-        incline_pushup: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="20" y1="35" x2="20" y2="20" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
-            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="28" cy="24" r="4.5" fill="#f8fafc"/>
-            <line x1="28" y1="28.5" x2="55" y2="49.5" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-            <line x1="28" y1="28.5" x2="20" y2="28.5" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M36 17 L29 22" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M29 22 L33 22 M29 22 L29 19" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>`,
-        support_isometric: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="20" y1="30" x2="60" y2="30" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="40" cy="15" r="4" fill="#f8fafc"/>
-            <line x1="40" y1="19" x2="40" y2="36" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-            <line x1="40" y1="19" x2="40" y2="30" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="40" y1="36" x2="36" y2="48" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="40" y1="36" x2="44" y2="48" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M28 20 Q40 22 52 20" stroke="#10b981" stroke-width="1" stroke-linecap="round" stroke-dasharray="2 2"/>
-        </svg>`,
-        bench_dip: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="15" y="30" width="15" height="15" fill="#475569"/>
-            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="36" cy="20" r="4" fill="#f8fafc"/>
-            <path d="M36 24 L25 24 L25 30" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M36 24 L36 36 L48 36 L54 49" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>`,
-        walk: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="10" y1="52" x2="70" y2="52" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="40" cy="18" r="4" fill="#f8fafc"/>
-            <line x1="40" y1="22" x2="40" y2="36" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-            <path d="M40 36 L34 44 L42 52" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M40 36 L46 44 L44 52" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M40 23 L44 32" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
-            <path d="M40 23 L36 30" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
-        </svg>`,
-        air_squat: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="40" cy="22" r="4" fill="#f8fafc"/>
-            <path d="M40 26 L42 34 L30 38 L32 50" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="40" y1="26" x2="52" y2="26" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>`,
-        reverse_lunge: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="38" cy="18" r="4" fill="#f8fafc"/>
-            <line x1="38" y1="22" x2="38" y2="34" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-            <path d="M38 34 L48 34 L48 50" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M38 34 L26 38 L22 48" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M38 23 L44 29" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
-        </svg>`,
-        sumo_squat: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="10" y1="50" x2="70" y2="50" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="40" cy="22" r="4.5" fill="#f8fafc"/>
-            <line x1="40" y1="26.5" x2="40" y2="35" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M40 35 L26 38 L24 50" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M40 35 L54 38 L56 50" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="40" y1="26.5" x2="40" y2="33" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>`,
-        basket: `<svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="60" y1="10" x2="60" y2="35" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <line x1="60" y1="18" x2="50" y2="18" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="30" cy="25" r="5" fill="#f59e0b"/>
-            <path d="M30 20 Q42 12 50 17" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2 2" stroke-linecap="round"/>
-        </svg>`
+        dead_hang: `<img src="images/dead_hang.png" alt="Cuelgues Pasivos" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        scapular_pullup: `<img src="images/dead_hang.png" alt="Dominadas Escapulares" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        australian_row: `<img src="images/australian_row.png" alt="Remos en paralelas" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        carrera: `<img src="images/carrera.png" alt="Carrera Progresiva" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        incline_pushup: `<img src="images/incline_pushup.png" alt="Flexiones Inclinadas" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        support_isometric: `<img src="images/support_isometric.png" alt="Soporte Isométrico" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        bench_dip: `<img src="images/bench_dip.png" alt="Fondos de tríceps" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        walk: `<img src="images/walk.png" alt="Caminata" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        air_squat: `<img src="images/sumo_squat.png" alt="Sentadillas" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        reverse_lunge: `<img src="images/reverse_lunge.png" alt="Zancadas" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        sumo_squat: `<img src="images/sumo_squat.png" alt="Sentadillas Sumo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`,
+        basket: `<img src="images/basket.png" alt="Básquetbol" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
     };
 
     // Routine Data: Monday (Lunes = Día 1) starts with Basketball. Other days shift accordingly.
@@ -1152,14 +1052,10 @@
         routine.exercises.forEach(ex => {
             html += `
                 <div class="exercise-card">
-                    <div class="exercise-layout">
-                        <div class="exercise-info">
-                            <span class="exercise-title">${ex.title}</span>
-                            <span class="exercise-desc">${ex.desc}</span>
-                        </div>
-                        <div class="exercise-diagram">
-                            ${diagrams[ex.diagram] || ''}
-                        </div>
+                    ${diagrams[ex.diagram] ? `<div class="exercise-image-container">${diagrams[ex.diagram]}</div>` : ''}
+                    <div class="exercise-info">
+                        <span class="exercise-title">${ex.title}</span>
+                        <span class="exercise-desc">${ex.desc}</span>
                     </div>
                     <div class="exercise-meta">
                         <span class="exercise-volume">${ex.volume}</span>
@@ -1289,22 +1185,14 @@
         let streak = 0;
         let d = new Date();
         
-        // Verificar hoy
         let todayStr = formatDate(d);
         let trainedToday = workoutHistory[todayStr] && workoutHistory[todayStr].percent > 0;
         
-        // Verificar ayer
-        d.setDate(d.getDate() - 1);
-        let yesterdayStr = formatDate(d);
-        let trainedYesterday = workoutHistory[yesterdayStr] && workoutHistory[yesterdayStr].percent > 0;
-        
-        // Si no entrenó hoy ni ayer, racha rota
-        if (!trainedToday && !trainedYesterday) {
-            return 0;
+        // Si hoy no ha entrenado todavía, empezamos a contar desde ayer
+        if (!trainedToday) {
+            d.setDate(d.getDate() - 1);
         }
         
-        // Reiniciar a hoy y contar hacia atrás
-        d = new Date();
         while (true) {
             let dateStr = formatDate(d);
             if (workoutHistory[dateStr] && workoutHistory[dateStr].percent > 0) {
