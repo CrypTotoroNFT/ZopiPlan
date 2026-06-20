@@ -250,6 +250,7 @@
         }
 
         .history-day {
+            position: relative;
             aspect-ratio: 1;
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.02);
@@ -263,6 +264,16 @@
             transition: var(--transition-smooth);
             user-select: none;
             cursor: pointer;
+        }
+
+        .day-paw {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            font-size: 1.7rem;
+            line-height: 1;
+            opacity: 0.5;
+            pointer-events: none;
         }
 
         .history-day.partial {
@@ -345,35 +356,8 @@
         }
 
         .warmup-content.open {
-            max-height: 600px;
+            max-height: 1200px; /* Incrementado para albergar las dos tarjetas grandes */
             opacity: 1;
-        }
-
-        .warmup-item {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .warmup-item-text {
-            flex-grow: 1;
-        }
-
-        .warmup-item-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 4px;
-            color: var(--text-primary);
-        }
-
-        .warmup-item-desc {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
         }
 
         /* Days Navigation Grid */
@@ -933,6 +917,86 @@
                 border-color: rgba(245, 158, 11, 0.5);
             }
         }
+
+        /* Dog Walking Card */
+        .dog-card {
+            border-left: 4px solid var(--accent-success);
+            background: rgba(16, 185, 129, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .dog-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .dog-icon-container {
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1.5px solid rgba(16, 185, 129, 0.2);
+            border-radius: 18px;
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .dog-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dog-info h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-success);
+        }
+
+        .dog-info p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        .dog-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            width: 100%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .dog-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .dog-btn.completed {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--accent-success);
+            color: var(--accent-success);
+            box-shadow: 0 0 15px var(--accent-success-glow);
+        }
     </style>
 </head>
 <body>
@@ -961,6 +1025,18 @@
             <span>Compartir logro en WhatsApp</span>
         </button>
         <button class="modal-close-btn" onclick="closeCelebrationModal()">Entendido</button>
+    </div>
+</div>
+
+<!-- MODAL DE PASEO DE KILINITO -->
+<div id="dog-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card" style="box-shadow: 0 20px 50px rgba(16, 185, 129, 0.25);">
+        <div class="modal-victory-image-container" style="border-color: var(--accent-success); box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);">
+            <img src="images/kilinito_happy.png" alt="Kilinito Feliz" class="modal-victory-img">
+        </div>
+        <h2 style="background: linear-gradient(135deg, var(--accent-success) 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">¡Kilinito Paseado!</h2>
+        <p>Muy bien, el Kilinito ha paseado. Un Kilinito con paseo es un Kilino feliz.</p>
+        <button class="modal-close-btn" onclick="closeDogModal()">¡Buen chico!</button>
     </div>
 </div>
 
@@ -1042,42 +1118,50 @@
             </svg>
         </div>
         <div id="warmup-content" class="warmup-content">
-            <div class="warmup-item">
-                <div class="exercise-diagram">
-                    <svg width="90" height="60" viewBox="0 0 90 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="20" y1="10" x2="20" y2="50" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
-                        <circle cx="45" cy="18" r="5" fill="#f8fafc"/>
-                        <line x1="45" y1="23" x2="45" y2="40" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-                        <line x1="45" y1="23" x2="22" y2="23" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M45 40 Q58 43 54 48" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/>
-                        <path d="M45 40 Q32 43 36 48" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/>
-                        <line x1="45" y1="40" x2="48" y2="53" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-                        <line x1="45" y1="40" x2="42" y2="53" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-                    </svg>
+            <!-- Calentamiento 1 -->
+            <div class="exercise-card">
+                <div class="exercise-image-container">
+                    <img src="images/leg_swings.png" alt="Balanceos de pierna">
                 </div>
-                <div class="warmup-item-text">
-                    <div class="warmup-item-title">1. Balanceos de Pierna (Leg Swings)</div>
-                    <div class="warmup-item-desc">Apóyate en un poste o paralela. Balancea una pierna adelante/atrás de forma fluida (10 reps). Luego de lado a lado (10 reps). Cambia de pierna. Abre cadera y activa glúteos.</div>
+                <div class="exercise-info">
+                    <span class="exercise-title">1. Balanceos de Pierna (Leg Swings)</span>
+                    <span class="exercise-desc">Apóyate en un poste o paralela. Balancea una pierna adelante/atrás de forma fluida. Luego de lado a lado. Activa glúteos y moviliza la cadera.</span>
+                </div>
+                <div class="exercise-meta">
+                    <span class="exercise-volume">10 reps adelante/atrás + 10 reps lado a lado por pierna</span>
                 </div>
             </div>
-            <div class="warmup-item">
-                <div class="exercise-diagram">
-                    <svg width="90" height="60" viewBox="0 0 90 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="15" y1="10" x2="15" y2="50" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
-                        <circle cx="42" cy="22" r="5" fill="#f8fafc"/>
-                        <line x1="42" y1="23" x2="15" y2="23" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M42 27 L50 35 L45 46" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M45 46 L30 46" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M54 28 L58 35" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M58 35 L55 33 M58 35 L57 31" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
+
+            <!-- Calentamiento 2 -->
+            <div class="exercise-card">
+                <div class="exercise-image-container">
+                    <img src="images/supported_squat.png" alt="Sentadilla profunda soportada">
                 </div>
-                <div class="warmup-item-text">
-                    <div class="warmup-item-title">2. Sentadilla Profunda Soportada</div>
-                    <div class="warmup-item-desc">Agárrate del poste vertical. Déjate caer en sentadilla completa, llevando la cadera abajo y atrás. Relaja la espalda baja por 30-45s para traccionar las vértebras.</div>
+                <div class="exercise-info">
+                    <span class="exercise-title">2. Sentadilla Profunda Soportada</span>
+                    <span class="exercise-desc">Agárrate del poste vertical. Déjate caer en sentadilla completa profunda, llevando la cadera abajo y atrás. Relaja la espalda baja para traccionar las vértebras y aliviar rigidez.</span>
+                </div>
+                <div class="exercise-meta">
+                    <span class="exercise-volume">30 a 45 segundos de estiramiento</span>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- REGISTRO DE PASEO DE KILINITO -->
+    <div class="card dog-card">
+        <div class="dog-content">
+            <div class="dog-icon-container">
+                <span>🐕</span>
+            </div>
+            <div class="dog-info">
+                <h3>Paseo de Kilinito</h3>
+                <p>Registrar el paseo diario para mantener a Kilinito feliz y cuidar tu espalda con movimiento activo de recuperación.</p>
+            </div>
+        </div>
+        <button id="dog-walk-btn" class="dog-btn" onclick="toggleDogWalk()">
+            Pasear a Kilinito
+        </button>
     </div>
 
     <!-- REST TIMER WIDGET -->
@@ -1252,6 +1336,7 @@
     let activeDay = 1;
     let completedSets = JSON.parse(localStorage.getItem('completedSets')) || {};
     let workoutHistory = JSON.parse(localStorage.getItem('workoutHistory')) || {};
+    let dogWalkHistory = JSON.parse(localStorage.getItem('dogWalkHistory')) || {};
 
     // Helper: Formato de fecha YYYY-MM-DD
     function formatDate(date) {
@@ -1293,6 +1378,7 @@
         selectDay(activeDay);
         updateProgress();
         updateHistoryUI();
+        updateDogWalkButton();
 
         // Registrar Service Worker para soporte offline y cacheo de imágenes
         if ('serviceWorker' in navigator) {
@@ -1514,6 +1600,14 @@
             square.className = `history-day ${statusClass}`;
             square.title = tooltipText;
             square.innerText = runner.getDate();
+            
+            if (dogWalkHistory[dateStr]) {
+                const paw = document.createElement('span');
+                paw.className = 'day-paw';
+                paw.innerText = '🐾';
+                square.appendChild(paw);
+            }
+            
             grid.appendChild(square);
             
             // Avanzar al día siguiente
@@ -1581,12 +1675,15 @@
         if (confirm("¿Seguro que quieres reiniciar todos tus datos de entrenamiento? Esto borrará tu historial de consistencia y racha de forma irreversible.")) {
             completedSets = {};
             workoutHistory = {};
+            dogWalkHistory = {};
             localStorage.removeItem('completedSets');
             localStorage.removeItem('workoutHistory');
             localStorage.removeItem('completedSetsDate');
+            localStorage.removeItem('dogWalkHistory');
             selectDay(activeDay);
             updateProgress();
             updateHistoryUI();
+            updateDogWalkButton();
             resetTimer();
         }
     }
@@ -1829,10 +1926,17 @@
     }
 
     function shareToWhatsApp() {
+        const todayStr = formatDate(new Date());
         const streak = calculateStreak();
         const routine = routines[activeDay];
         
-        const text = `¡Entrenamiento completado en Zopiplan! 🦅🔥\n¡Alaben al glorioso Zopilote! 🙌\n\n⚡ Racha actual: ${streak} ${streak === 1 ? 'día' : 'días'} consecutivos\n💪 Hoy entrené: ${routine.name} (${routine.type})\n\n¡Cuidando la espalda y sumando consistencia! 🏋️‍♂️✨`;
+        let text = `¡Entrenamiento completado en Zopiplan! 🦅🔥\n¡Alaben al glorioso Zopilote! 🙌\n\n⚡ Racha actual: ${streak} ${streak === 1 ? 'día' : 'días'} consecutivos\n💪 Hoy entrené: ${routine.name} (${routine.type})`;
+        
+        if (dogWalkHistory[todayStr]) {
+            text += `\n🐾 ¡Kilinito también ha paseado hoy! Un Kilinito con paseo es un Kilino feliz y soberano. ¡Gloria al Kilino paseador! 🐕✨`;
+        }
+        
+        text += `\n\n¡Cuidando la espalda y sumando consistencia! 🏋️‍♂️✨`;
         
         const encodedText = encodeURIComponent(text);
         const whatsappUrl = `https://wa.me/?text=${encodedText}`;
@@ -1882,9 +1986,61 @@
                 selectDay(activeDay);
                 updateProgress();
                 updateHistoryUI();
+                updateDogWalkButton();
             }
         }
     });
+
+    // --- REGISTRO DE PASEO DE KILINITO ---
+    function toggleDogWalk() {
+        const todayStr = formatDate(new Date());
+        const isWalked = !dogWalkHistory[todayStr];
+        
+        if (isWalked) {
+            dogWalkHistory[todayStr] = true;
+            localStorage.setItem('dogWalkHistory', JSON.stringify(dogWalkHistory));
+            updateDogWalkButton();
+            updateHistoryUI();
+            
+            // Festejo con confeti en el centro de la pantalla
+            try {
+                spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 35);
+            } catch (e) {
+                console.error(e);
+            }
+            
+            showDogModal();
+        } else {
+            if (confirm("¿Desmarcar el paseo de Kilinito de hoy?")) {
+                delete dogWalkHistory[todayStr];
+                localStorage.setItem('dogWalkHistory', JSON.stringify(dogWalkHistory));
+                updateDogWalkButton();
+                updateHistoryUI();
+            }
+        }
+    }
+
+    function updateDogWalkButton() {
+        const todayStr = formatDate(new Date());
+        const btn = document.getElementById('dog-walk-btn');
+        if (btn) {
+            if (dogWalkHistory[todayStr]) {
+                btn.classList.add('completed');
+                btn.innerHTML = '¡Kilinito Paseado! 🐾';
+            } else {
+                btn.classList.remove('completed');
+                btn.innerHTML = 'Pasear a Kilinito';
+            }
+        }
+    }
+
+    function showDogModal() {
+        document.getElementById('dog-modal').style.display = 'flex';
+    }
+
+    function closeDogModal() {
+        document.getElementById('dog-modal').style.display = 'none';
+    }
 </script>
 
 </body>
