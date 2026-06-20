@@ -987,6 +987,28 @@
     let completedSets = JSON.parse(localStorage.getItem('completedSets')) || {};
     let workoutHistory = JSON.parse(localStorage.getItem('workoutHistory')) || {};
 
+    // Helper: Formato de fecha YYYY-MM-DD
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Verificar si es un nuevo día para resetear las series completadas
+    function checkDateReset() {
+        const todayStr = formatDate(new Date());
+        const lastSavedDate = localStorage.getItem('completedSetsDate');
+        if (lastSavedDate !== todayStr) {
+            completedSets = {};
+            localStorage.setItem('completedSets', JSON.stringify(completedSets));
+            localStorage.setItem('completedSetsDate', todayStr);
+        }
+    }
+
+    // Ejecutar verificación de fecha inmediatamente al cargar la app
+    checkDateReset();
+
     // Timer variables
     let timerDuration = 60;
     let timerSecondsLeft = 60;
@@ -997,6 +1019,7 @@
 
     // Initialize App
     window.onload = function() {
+        checkDateReset();
         // Set default active day to current day of the week (1=Lun, 7=Dom)
         let currentDayOfWeek = new Date().getDay(); // 0 is Sunday, 1 is Monday...
         activeDay = currentDayOfWeek === 0 ? 7 : currentDayOfWeek;
@@ -1006,13 +1029,7 @@
         updateHistoryUI();
     };
 
-    // Helper: Formato de fecha YYYY-MM-DD
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
+    // (formatDate y checkDateReset ahora están definidos arriba)
 
     // Toggle Warmup accordion
     function toggleWarmup() {
@@ -1028,6 +1045,7 @@
 
     // Select Day Tab
     function selectDay(dayNum) {
+        checkDateReset();
         activeDay = dayNum;
         
         // Update tab styling
@@ -1086,6 +1104,7 @@
 
     // Toggle set status
     function toggleSet(setId) {
+        checkDateReset();
         const btn = document.getElementById(setId);
         const wasCompleted = btn.classList.contains('completed');
         
@@ -1102,6 +1121,7 @@
         }
         
         localStorage.setItem('completedSets', JSON.stringify(completedSets));
+        localStorage.setItem('completedSetsDate', formatDate(new Date()));
         saveToHistory();
         updateProgress();
     }
@@ -1242,6 +1262,7 @@
             workoutHistory = {};
             localStorage.removeItem('completedSets');
             localStorage.removeItem('workoutHistory');
+            localStorage.removeItem('completedSetsDate');
             selectDay(activeDay);
             updateProgress();
             updateHistoryUI();
@@ -1331,6 +1352,22 @@
             console.log("Audio not supported or blocked by browser policy");
         }
     }
+
+    // Detectar si el usuario regresa a la app en un nuevo día (para refrescar automáticamente)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            const todayStr = formatDate(new Date());
+            const lastSavedDate = localStorage.getItem('completedSetsDate');
+            if (lastSavedDate !== todayStr) {
+                checkDateReset();
+                let currentDayOfWeek = new Date().getDay();
+                activeDay = currentDayOfWeek === 0 ? 7 : currentDayOfWeek;
+                selectDay(activeDay);
+                updateProgress();
+                updateHistoryUI();
+            }
+        }
+    });
 </script>
 
 </body>
