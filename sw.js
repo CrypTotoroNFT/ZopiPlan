@@ -1,7 +1,9 @@
-const CACHE_NAME = 'zopiplan-cache-v1';
+const CACHE_NAME = 'zopiplan-cache-v2';
 const ASSETS = [
     './',
     './index.html',
+    './manifest.json',
+    './images/zopilote_icon.png',
     './images/australian_row.png',
     './images/basket.png',
     './images/bench_dip.png',

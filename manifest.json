@@ -1,0 +1,18 @@
+{
+  "name": "Zopiplan - Hábito Lumbar",
+  "short_name": "Zopiplan",
+  "description": "Plan de entrenamiento calisténico enfocado en consistencia y cuidado de espalda.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./images/zopilote_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
