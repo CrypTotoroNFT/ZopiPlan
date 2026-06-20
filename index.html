@@ -1832,19 +1832,7 @@
         const streak = calculateStreak();
         const routine = routines[activeDay];
         
-        // Obtener la URL pública de la imagen de victoria de forma dinámica (ej. de GitHub Pages)
-        const origin = window.location.origin;
-        let basePath = window.location.pathname;
-        if (basePath.endsWith('index.html')) {
-            basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1);
-        }
-        if (!basePath.endsWith('/')) {
-            basePath += '/';
-        }
-        // Solo agregar el link de la imagen si se accede por web (no local por file://)
-        const imageLink = origin.startsWith('http') ? `\n🏆 ¡Mira mi trofeo!: ${origin}${basePath}images/victory_trophy.png` : '';
-        
-        const text = `¡Entrenamiento completado en Zopiplan! 🦅🔥\n¡Alaben al glorioso Zopilote! 🙌\n\n⚡ Racha actual: ${streak} ${streak === 1 ? 'día' : 'días'} consecutivos\n💪 Hoy entrené: ${routine.name} (${routine.type})${imageLink}\n\n¡Cuidando la espalda y sumando consistencia! 🏋️‍♂️✨`;
+        const text = `¡Entrenamiento completado en Zopiplan! 🦅🔥\n¡Alaben al glorioso Zopilote! 🙌\n\n⚡ Racha actual: ${streak} ${streak === 1 ? 'día' : 'días'} consecutivos\n💪 Hoy entrené: ${routine.name} (${routine.type})\n\n¡Cuidando la espalda y sumando consistencia! 🏋️‍♂️✨`;
         
         const encodedText = encodeURIComponent(text);
         const whatsappUrl = `https://wa.me/?text=${encodedText}`;
