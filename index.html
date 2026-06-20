@@ -1027,6 +1027,13 @@
         selectDay(activeDay);
         updateProgress();
         updateHistoryUI();
+
+        // Registrar Service Worker para soporte offline y cacheo de imágenes
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registrado con éxito:', reg.scope))
+                .catch(err => console.error('Error al registrar el Service Worker:', err));
+        }
     };
 
     // (formatDate y checkDateReset ahora están definidos arriba)
