@@ -230,34 +230,71 @@
             gap: 8px;
         }
 
+        .history-days-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            padding: 0 2px;
+        }
+
         .history-grid {
-            display: flex;
-            justify-content: space-between;
-            gap: 4px;
-            overflow-x: auto;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
             padding-bottom: 4px;
         }
 
         .history-day {
-            flex-shrink: 0;
-            width: 13px;
-            height: 13px;
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.02);
-            position: relative;
+            aspect-ratio: 1;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.25);
+            transition: var(--transition-smooth);
+            user-select: none;
             cursor: pointer;
         }
 
         .history-day.partial {
-            background: rgba(16, 185, 129, 0.4);
-            border-color: rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.35);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .history-day.full {
             background: var(--accent-success);
             border-color: var(--accent-success);
-            box-shadow: 0 0 6px var(--accent-success-glow);
+            color: #ffffff;
+            box-shadow: 0 0 8px var(--accent-success-glow);
+        }
+
+        .history-day.future {
+            opacity: 0.25;
+            background: transparent;
+            border-style: dashed;
+            cursor: default;
+        }
+
+        .history-day.today {
+            border: 1.5px solid var(--accent-primary);
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+            color: var(--accent-primary-hover);
+            font-weight: 700;
+        }
+
+        .history-day.today.full {
+            border: 1.5px solid var(--text-primary);
+            color: #ffffff;
         }
 
         .history-labels {
@@ -266,6 +303,7 @@
             font-size: 0.7rem;
             color: var(--text-secondary);
             font-weight: 500;
+            margin-top: 4px;
         }
 
         /* Warm-up Section */
@@ -790,12 +828,21 @@
             </div>
         </div>
         <div class="history-grid-container">
+            <div class="history-days-header">
+                <span>L</span>
+                <span>M</span>
+                <span>M</span>
+                <span>J</span>
+                <span>V</span>
+                <span>S</span>
+                <span>D</span>
+            </div>
             <div id="history-grid" class="history-grid">
                 <!-- Dynamically populated 28 squares (last 4 weeks) -->
             </div>
             <div class="history-labels">
                 <span>Hace 4 semanas</span>
-                <span>Hoy</span>
+                <span>Esta semana</span>
             </div>
         </div>
     </div>
@@ -1217,17 +1264,43 @@
         const streak = calculateStreak();
         document.getElementById('streak-count').innerText = `${streak} ${streak === 1 ? 'Día' : 'Días'}`;
 
-        // Renderizar los últimos 28 días (4 semanas)
-        for (let i = 27; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            const dateStr = formatDate(d);
+        // Encontrar el lunes de la semana actual
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 es Domingo, 1 es Lunes...
+        const distanceToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        
+        const currentMonday = new Date(today);
+        currentMonday.setDate(today.getDate() - distanceToMonday);
+        
+        // Lunes de hace 3 semanas (total de 4 semanas en la grilla)
+        const startMonday = new Date(currentMonday);
+        startMonday.setDate(currentMonday.getDate() - 21);
+        
+        // Renderizar 28 días desde startMonday (matriz de 4x7)
+        const runner = new Date(startMonday);
+        const todayStr = formatDate(today);
+        
+        // Clones de fechas sin hora para comparación exacta de días futuros
+        const todayZero = new Date(today);
+        todayZero.setHours(0,0,0,0);
+        
+        for (let i = 0; i < 28; i++) {
+            const dateStr = formatDate(runner);
             const entry = workoutHistory[dateStr];
             
             let statusClass = '';
-            let tooltipText = `${d.getDate()}/${d.getMonth()+1}`;
+            let tooltipText = `${runner.getDate()}/${runner.getMonth()+1}`;
             
-            if (entry) {
+            const runnerZero = new Date(runner);
+            runnerZero.setHours(0,0,0,0);
+            
+            const isFuture = runnerZero > todayZero;
+            const isToday = dateStr === todayStr;
+            
+            if (isFuture) {
+                statusClass = 'future';
+                tooltipText += ': Futuro';
+            } else if (entry) {
                 if (entry.percent === 100) {
                     statusClass = 'full';
                 } else if (entry.percent > 0) {
@@ -1238,10 +1311,19 @@
                 tooltipText += ': Sin entrenar';
             }
             
+            if (isToday) {
+                statusClass += ' today';
+                tooltipText += ' (Hoy)';
+            }
+            
             const square = document.createElement('div');
             square.className = `history-day ${statusClass}`;
             square.title = tooltipText;
+            square.innerText = runner.getDate();
             grid.appendChild(square);
+            
+            // Avanzar al día siguiente
+            runner.setDate(runner.getDate() + 1);
         }
     }
 
